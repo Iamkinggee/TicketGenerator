@@ -1,6 +1,8 @@
 
 import './App.css'
-import SelectTicket from './pages/SelectTicket'
+import TicketCard from './components/TicketCard'
+// import AttendeeDetails from './pages/AttendeeDetails'
+// import SelectTicket from './pages/SelectTicket'
 
 
 function App() {
@@ -8,7 +10,9 @@ function App() {
 
   return (
     <>
-    <SelectTicket/>
+    {/* <SelectTicket/> */}
+    {/* <AttendeeDetails/> */}
+    <TicketCard/>
 
     
     

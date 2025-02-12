@@ -8,9 +8,6 @@ function SelectTicket() {
 
 
           {/* Navigation Bar */}
-         
-
-          {/* Navigation Bar */}
             <Navbar/>
 
 
@@ -18,11 +15,11 @@ function SelectTicket() {
 
   
           {/* Mobile Menu */}
-          <div id="mobile-menu" className="lg:hidden bg-blue-600 text-white p-4 hidden w-full">
+          {/* <div id="mobile-menu" className="lg:hidden bg-blue-600 text-white p-4 hidden w-full">
           <a href="#" className="hover:text-gray-300">Events</a>
                   <a href="#" className="hover:text-gray-300">My Tickets</a>
                   <a href="#" className="hover:text-gray-300">About Project</a>
-          </div>
+          </div> */}
         </div>
 
 
@@ -67,6 +64,7 @@ function SelectTicket() {
     <div className="self-stretch text-center text-neutral-50 md:text-[62px] text-[28px] font-normal font-['Road Rage'] leading-[62px]">Techember Fest ”25</div>
     <div className="md:w-[340px] w-[200px] text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal text-[12px] mt-[-15px] md:mt-[0px] ">Join us for an unforgettable experience at [Event Name]! Secure your spot now.</div>
   </div>
+  
   <div className="justify-start items-start gap-4 inline-flex">
 
 
