@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import { useNavigate } from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
-import Form from '../components/form';
+import Form from '../components/Form';
 
 
 
