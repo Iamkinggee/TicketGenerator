@@ -31,38 +31,9 @@ function Form1() {
         }
     };
 
-    // Handle form submission
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (!imageFile) {
-    //         toast.error('No image file selected');
-    //         return;
-    //     }
-    //     try {
-    //         const formDataImage = new FormData();
-    //         formDataImage.append('file', imageFile);
-    //         formDataImage.append('upload_preset', preset_key);
-
-    //         const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
-    //         const uploadedImageUrl = response.data.secure_url;
-
-    //         // You can now save the form data along with the image URL to your database or IndexedDB
-    //         // await addFormData({ ...formData, imageUrl: uploadedImageUrl });
-    //         toast.success('Form data saved successfully');
-    //         navigate('/ticketCard'); // Navigate to the next page
-    //     } catch (error) {
-    //         console.error('Error uploading image:', error);
-    //         toast.error('Failed to upload image');
-    //     }
-    // };
+   
 
 
-
-
-    // new form submit
-
-
-    // Form1 Component
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,6 +92,13 @@ const handleSubmit = async (e) => {
     };
 
 
+
+
+//   const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/');
+  };
 
 
 
@@ -191,20 +169,11 @@ const handleSubmit = async (e) => {
 
                     <div className="upload-instructions text-center  md:w-full w-[150px]">
                         
-                    Upload File
+                    Drag & Drop Image
                      
                     </div>  
 
-                  {/* here */}
-                    {/* Display uploaded image */}
-                   {/* {imageUrl
-                   && (
-                        <div className="image-preview w-[280px] pr-[40px] mb-[13px] h-[250px]">
-                            <img src={imageUrl} alt="Uploaded" className="uploaded-image  rounded-2xl w-[200px] h-[250px] pb-[-50px]  object-fill" />
-                        </div>
-                    )
-                } 
- */}
+              
 
                     {/* Hidden file input */}
 
@@ -234,8 +203,6 @@ const handleSubmit = async (e) => {
              </div>
 
 
-
-            {/* <form onSubmit={handleSubmit}> */}
                 {/* Form fields */}
 
                 <div className='flex flex-col text-white w-[310px]  md:w-[550px]' >
@@ -286,21 +253,11 @@ const handleSubmit = async (e) => {
 
 
 
-                {/* Submit Button */}
-                {/* <div className="button-container">
-                    <button type="submit" className="submit-btn">
-                        Submit
-                    </button>
-                </div> */}
-
-
-
-
 <div className=" h-12 md:w-[600px] mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row w-[310px] ">
 
                      
 <div  className=' justify-center w-full '>                    
-<button type="submit"   className="grow  basis-0 md:h-12 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex w-[310px] md:w-[280px] h-[48px] text-white "  >Cancel
+<button type="submit"   className="grow  basis-0 md:h-12 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex w-[310px] md:w-[280px] h-[48px] text-white " onClick={handleBack} >Cancel
 
 </button>
 </div>

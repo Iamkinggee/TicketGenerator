@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 //  import Upload1 from '../components/Upload1';
 import { Bounce, ToastContainer } from 'react-toastify';
 import Form1 from '../components/form1';
-// import FileUpload from '../components/FileUpload';
-
 
 
 
@@ -88,22 +86,6 @@ transition={Bounce}
 
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* file upload */}
-{/* 
-<Upload1/> */}
 
 <Form1/>
 
