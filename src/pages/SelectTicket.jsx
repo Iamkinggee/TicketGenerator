@@ -8,46 +8,46 @@ import { addFormData } from '../components/db';
 function SelectTicket() {
   const navigate = useNavigate();
   
-  const [selectedTicket, setSelectedTicket] = useState(null);  // Track selected ticket
-  const [ticketQuantity, setTicketQuantity] = useState(1); // Track ticket quantity
-  const [errors, setErrors] = useState({}); // To handle validation errors
+  const [selectedTicket, setSelectedTicket] = useState(null);  
+  const [ticketQuantity, setTicketQuantity] = useState(1); 
+  const [errors, setErrors] = useState({}); 
 
-  // Handle ticket selection
+  
   const handleTicketSelect = (ticket) => {
     setSelectedTicket(ticket);
   };
 
-  // Handle quantity change
+  
   const handleQuantityChange = (e) => {
     setTicketQuantity(e.target.value);
   };
 
-  // Handle submit
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation: Ensure a ticket is selected
+    
     if (!selectedTicket) {
       setErrors({ ticket: 'Please select a ticket option.' });
       return;
     }
 
-    // Save the data to IndexedDB
+    
     try {
       const formData = {
         selectedTicket,
         ticketQuantity,
       };
 
-      await addFormData(formData);  // Assuming addFormData saves data to IndexedDB
+      await addFormData(formData);  
       console.log('Data saved:', formData);
-      navigate('/attendeeDetails');  // Navigate to the next page after submission
+      navigate('/attendeeDetails');  
     } catch (error) {
       console.error('Failed to save to IndexedDB:', error);
     }
   };
 
-  // Handle next and back navigation
+  
   const handleNext = () => navigate('/attendeeDetails');
   const handleBack = () => navigate('/');
 
@@ -124,7 +124,7 @@ function SelectTicket() {
 
 
 
-        {/* Ticket Options */}
+      
         <div className="text-neutral-50 text-base font-normal font-['Roboto'] leading-normal mt-[30px] pl-[15px]">Select Ticket Type:</div>
 
         <div className="w-[305px] md:w-full mx-[20px] md:mx-[0px] md:h-[142px] p-4 bg-[#042127] rounded-3xl border border-[#07363e] flex-col justify-center items-center gap-4 mt-[11px] inline-flex">
