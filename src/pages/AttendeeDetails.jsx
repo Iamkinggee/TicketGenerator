@@ -1,9 +1,8 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import { useNavigate } from 'react-router-dom';
-//  import Upload1 from '../components/Upload1';
 import { Bounce, ToastContainer } from 'react-toastify';
-import Form1 from '../components/form1';
+import Form from '../components/form';
 
 
 
@@ -14,14 +13,6 @@ function AttendeeDetails() {
   const navigate = useNavigate();
 
 
-  // const handleNext = () => {
-  //   navigate('/ticketCard');
-  // };
-
-
-  // const handleBack = () => {
-  //   navigate(-1); 
-  // };
 
   return (
  
@@ -87,10 +78,10 @@ transition={Bounce}
 </div>
 
 
-<Form1/>
+<Form/>
 
 
-
+ 
 
     </div> 
     </div>

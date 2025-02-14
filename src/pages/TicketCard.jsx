@@ -1,8 +1,8 @@
 
-import Navbar from './Navbar'
+import Navbar from '../components/Navbar'
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { getFormData } from './db';
+import { getFormData } from '../components/db';
 import { useLocation } from 'react-router-dom';
 
 
@@ -42,7 +42,7 @@ if (!ticketData) return <div>Loading ticket...</div>;
 
 
   return (
-<div  className="w-full h-[1000px] md:h-[1300px] flex flex-col bg-[#02191D] bg-opacity-40 items-center pb-[30px]  overflow-hidden px-[10px]">
+<div  className="w-full h-[1400px] md:h-[1300px] flex flex-col bg-[#02191D] bg-opacity-40 items-center pb-[30px]  overflow-hidden px-[10px]">
 
 <Navbar/>
 
@@ -157,60 +157,9 @@ if (!ticketData) return <div>Loading ticket...</div>;
 
 
 
-
-              {/* <img class="w-[140px]  h-[140px] rounded-xl border-4 border-[#23a0b5]/50" src="https://placehold.co/140x140" /> */}
-
-{/* image url */}
-              {/* {ticketData.imageUrl ? (
-        <img src={ticketData.imageUrl} alt="Uploaded" style={{ width: '140px', height: '140px', objectFit: 'cover' }} className=' rounded-xl border-4 border-[#23a0b5]/50' />
-      ) : (
-        <p>No image uploaded</p>
-      )} */}
-
-
-
-{/* hereeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
-
-
-
 <img src={formDetails.imageUrl} alt="Profile" className="ticket-image w-[140px]  h-[140px] rounded-xl border-4 border-[#23a0b5]/50" /> 
 
-      {/* new image url */}
-
-
-
-      {/* <img src={formDetails.imageUrl} alt="Profile" className="ticket-image" /> */}
-      {/* <p>Name: {formDetails.name}</p>
-                <p>Email: {formDetails.email}</p>
-                <p>Ticket Type: {formDetails.ticketType}</p>
-                <p>Quantity: {formDetails.quantity}</p>
-                <p>Special Request: {formDetails.textarea}</p> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      
 
 
 

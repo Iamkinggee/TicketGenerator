@@ -1,222 +1,103 @@
 
+import React, { useState, useRef } from 'react';
+import './Form.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-// import React, { useState, useRef } from 'react';
-// import './Form.css';
-// import { useNavigate } from 'react-router-dom';
-// import { addFormData } from './db';
-// import axios from 'axios';
-// import { toast } from 'react-toastify';
+function Form() {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({ name: '', email: '', textarea: '' });
+    const [imageFile, setImageFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
+    const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
 
-// // import React, { useState } from 'react';
-// // import './Form.css';
-// // import { useNavigate } from 'react-router-dom';
-// // import { addFormData } from './db';
-// // import axios from 'axios'
+    // Handle form input changes
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-
-// function Form() {
-
-//     // const navigate = useNavigate();
-
-
-// //   const [imageFile, setImageFile] = useState(null);
-// //   const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
-// //   const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
-
-
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFormData({ ...formData, [name]: value });
-// //   };
-
-// //   const handleImageChange = (e) => {
-// //     setImageFile(e.target.files[0]);
-// //   };
-
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     try {
-// //       if (!imageFile) {
-// //         console.error('No image file selected');
-// //         return;
-// //       }
-
-// //       const formDataImage = new FormData();
-// //       formDataImage.append('file', imageFile);
-// //       formDataImage.append('upload_preset', preset_key);
-
-// //       const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
-// //       const imageUrl = response.data.secure_url;
-
-// //       await addFormData({ ...formData, imageUrl });
-// //       console.log('Form data saved to IndexedDB:', { ...formData, imageUrl });
-// //     } catch (error) {
-// //       console.error('Error saving form data:', error);
-// //     }
-// //   };
-
-
-
-//     // const handleBack = () => {
-//     //     navigate(-1); 
-//     //   };
-    
-//     //  const handleNext = () => {
-//     //     navigate(+1)
-//     //    };
-    
-
-
-
-// //     const [formData, setFormData] = useState({
-// //         name: '',
-// //         email: '',
-// //         textarea: '',
-// //         imageUrl: ''
-// //     });
-
-// //     const [errors, setErrors] = useState({});
-
-// //     // const handleChange = (e) => {
-// //     //     const { name, value } = e.target;
-// //     //     setFormData({
-// //     //         ...formData,
-// //     //         [name]: value,
-// //     //     });
-// //     // };
+    // Handle image change (drag and drop or file input)
+    const handleImageChange = (e, dropped = false) => {
+        const tempFile = dropped ? e : e.target.files[0];
+        if (tempFile) {
+            setImageFile(tempFile);
+            const reader = new FileReader();
+            reader.onloadend = () => setImageUrl(reader.result); 
+            reader.readAsDataURL(tempFile);
+        }
+    };
 
    
 
-// //     // const handleSubmit = async (e) => {
-// //     //     e.preventDefault();
-// //     //     const newErrors = validateForm(formData);
-// //     //     setErrors(newErrors);
-   
-// //     //     if (Object.keys(newErrors).length === 0) {
-// //     //         try {
-// //     //             await addFormData(formData);
-// //     //             console.log('Form data saved to IndexedDB');
-// //     //             navigate('/ticketCard');  
-// //     //         } catch (error) {
-// //     //             console.error('Failed to save form data:', error);
-// //     //         }
-// //     //     } else {
-// //     //         console.log('Form submission failed due to validation errors.');
-// //     //     }
-// //     // };
-   
 
 
-
-// //     const validateForm = (data) => {
-// //         const errors = {};
-
-// //         if (!data.name.trim()) {
-// //             errors.name = 'Name is required';
-// //         } else if (data.name.length < 4) {
-// //             errors.name = 'name must be at least 4 characters long';
-// //         }
-
-// //         if (!data.email.trim()) {
-// //             errors.email = 'Email is required';
-// //         } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-// //             errors.email = 'Email is invalid';
-// //         }
-
-
-// //         return errors;
-// //     };
-
-
-
-
-
-//     // upload
-
-//         const [file, setFile] = useState(null);
-//         const [progress, setProgress] = useState(0);
-//         const [status, setStatus] = useState('idle');
-//         const [res, setRes] = useState(null);
-//         const [imageUrl, setImageUrl] = useState(null);
+const handleSubmit = async (e) => {
+    e.preventDefault();
     
-//         const fileRef = useRef(null);
-//         const allowedFileSize = 1000 * 1024;
+    // Validation for image
+    if (!imageFile) {
+        toast.error('No image file selected');
+        return;
+    }
 
+    try {
+        // Cloudinary image upload
+        const formDataImage = new FormData();
+        formDataImage.append('file', imageFile);
+        formDataImage.append('upload_preset', preset_key);
 
+        const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
+        const uploadedImageUrl = response.data.secure_url;
 
+        // Collecting all the form data to pass to the ticket page
+        const formDetails = {
+            name: formData.name,
+            email: formData.email,
+            textarea: formData.textarea,
+            imageUrl: uploadedImageUrl,
+            // Assuming you have ticket type and quantity fields in formData
+            ticketType: formData.ticketType, 
+            quantity: formData.quantity
+        };
 
-//         // const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
-//         // const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
-    
+        // You can store the data in state, or pass via Navigate (using state)
+        navigate('/ticketCard', { state: formDetails }); // Passing data to ticketCard component
 
+        toast.success('Form data saved successfully');
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        toast.error('Failed to upload image');
+    }
+};
 
 
 
 
 
 
-    
-//         const handleFileChange = ({e, dropped=false}) =>{
-//             const tempFile = dropped === true ? e : e.target.files[0]
-//             if(!dropped && (!e.target.files || !e.target.files.length > 0)){
-//                 return toast.error('Please select a single file')
-//             }
-    
-    
-    
-    
-//             try {
-//                 setStatus('Uploading')
-//                 setFile(tempFile);
-//                 const formData = new FormData();
-//                 formData.append('file', tempFile);
-//                 formData.append('upload_preset', preset_key)
-//                 formData.append('cloud_name', cloud_name)
-    
-//                 axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formData, {
-//                     headers: {
-//                         'Content-Type': 'multipart/form-data'
-//                     },
-//                     onUploadProgress: (progressEvent) => {
-//                         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-//                         setProgress(percentCompleted)
-//                     }
-//                 }).then(res => {
-//                     setStatus("done");
-//                     setRes(res?.data);
-//                     console.log({res});
-//                     setImageUrl(res.data.secure_url);
-    
-//                     toast.success('File uploaded successfully')
-//                 }).catch(error=>{
-//                     fileRef.current.value = ''
-//                     setProgress(0);
-//                     setStatus("failed");
-//                     toast.error("Failed to upload")
-//                 })
-//             } catch (err) {
-//                 fileRef.current.value = ''
-//                 setProgress(0);
-//                 setStatus("failed");
-//                 toast.error("Failed to upload")
-//             }
-//         }
-//         const handleDrop = e =>{
-//             e.preventDefault();
-    
-//             const droppedFile = e.dataTransfer.files[0];
-//             setFile(droppedFile)
-//             handleFileChange({e: droppedFile, dropped: true})
-//         }
-//         const handleDragOver = e =>{
-//             e.preventDefault();
-//         }
+    // Handle drag over
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
 
+    // Handle drop event
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const droppedFile = e.dataTransfer.files[0];
+        handleImageChange(droppedFile, true);
+    };
 
 
 
 
+//   const navigate = useNavigate();
 
+  const handleBack = () => {
+    navigate('/');
+  };
 
 
 
@@ -225,664 +106,184 @@
 
 
 
+    return (
+        
+             <div data-layer="img" class="Img md:h-[340px] h-[401px] px-6 pt-6  bg-[#042127] rounded-3xl border border-[#07363e] flex-col justify-start items-start gap-8 flex ">
 
+             <div data-layer="Label" class="Label text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal">Upload Profile Photo</div>
 
+             <form onSubmit={handleSubmit}> 
+             {/* <form onSubmit={handleSubmit}>     */}
+             <div data-layer="Frame 1618871961" class="  Frame1618871961 md:w-[500px] w-[300px] h-[210px] bg-black/20 justify-center rounded-2xl  items-center gap-2.5 inline-flex">
 
 
+             
+             
+           
+{/* here */}
+             <div data-layer="Section Title" class="SectionTitle cursor-pointer md:ml-[580px] ml-[550px] w-[220px] md:w-[300px] h-[250px] p-6 bg-[#0e464e] rounded-[32px] border-4 border-[#23a0b5]/50 flex-col justify-center items-center gap-4 inline-flex">
 
+         <div data-svg-wrapper data-layer="Icon / cloud-download" class="IconCloudDownload relative">
 
+         
+         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+         
+         <path d="M25.2639 14.816C24.6812 10.2267 20.7505 6.66669 16.0052 6.66669C12.3305 6.66669 9.13854 8.81469 7.68121 12.2C4.81721 13.056 2.67188 15.76 2.67188 18.6667C2.67188 22.3427 5.66254 25.3334 9.33854 25.3334H10.6719V22.6667H9.33854C7.13321 22.6667 5.33854 20.872 5.33854 18.6667C5.33854 16.7947 6.93721 14.9907 8.90254 14.6454L9.67721 14.5094L9.93321 13.7654C10.8705 11.0307 13.1972 9.33335 16.0052 9.33335C19.6812 9.33335 22.6719 12.324 22.6719 16V17.3334H24.0052C25.4759 17.3334 26.6719 18.5294 26.6719 20C26.6719 21.4707 25.4759 22.6667 24.0052 22.6667H21.3385V25.3334H24.0052C26.9465 25.3334 29.3385 22.9414 29.3385 20C29.337 18.8047 28.9347 17.6444 28.196 16.7047C27.4574 15.7649 26.425 15.0999 25.2639 14.816Z" fill="#FAFAFA"/>
+         <path d="M17.3385 18.6667V13.3334H14.6719V18.6667H10.6719L16.0052 25.3334L21.3385 18.6667H17.3385Z" fill="#FAFAFA"/>
+         </svg>
 
 
 
 
+         {/* here */}
+         {imageUrl
+                   && (
+                        <div className="image-preview w-[280px]  h-[250px]">
+                            <img src={imageUrl} alt="Uploaded" className="uploaded-image  rounded-2xl w-[200px] h-[250px] pt-2 mx-10  object-contain" />
+                        </div>
+                    )
+                } 
 
 
+         
+         </div>
 
+        
+{/*   
+             <div data-layer="Heading" class="Heading w-[250px] justify-center   self-stretch text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal">Drag & drop or click to upload...</div>  */}
 
 
+             
+             <div data-layer="Heading" class="Heading w-[250px] justify-center   self-stretch text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal">
 
 
 
+                         {/*drag n drop  */}
 
+             <div
+                    className="upload-area"
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                >
 
+                    <div className="upload-instructions text-center  md:w-full w-[150px]">
+                        
+                    Drag & Drop Image
+                     
+                    </div>  
 
+              
 
+                    {/* Hidden file input */}
 
 
+                   <input
+                        type="file"
+                        onChange={(e) => handleImageChange(e)}
+                        accept="image/*"
+                        style={{opacity: 0, position: "absolute"}}
+                        
+                    /> 
 
+           
 
 
+                </div>
 
+             </div>
+  </div>
 
+   <div data-svg-wrapper data-layer="Progress container" class="ProgressContainer relative">
+   <svg width="556" height="4" viewBox="0 0 556 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+  
+   </svg>
+  
+   </div>
+             </div>
 
 
+                {/* Form fields */}
 
+                <div className='flex flex-col text-white w-[310px]  md:w-[550px]' >
+                <label  className='pb-3 pt-20'>Enter Your Name: </label>
+                <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Name"
+                    required
+                    className='border-1 border-[#23a0b5]/50  w-full p-4 rounded-2xl '
+                />
 
+                </div>
 
 
 
 
-
-
-
-
-
-
-
-
-// // formmmmm okay
-
-
-//         const navigate = useNavigate();
-//         const [formData, setFormData] = useState({ name: '', email: '', textarea: '' });
-//         const [imageFile, setImageFile] = useState(null);
-//         const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
-//         const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
-      
-//         const handleChange = (e) => {
-//           const { name, value } = e.target;
-//           setFormData({ ...formData, [name]: value });
-//         };
-      
-//         const handleImageChange = (e) => {
-//           setImageFile(e.target.files[0]);
-//         };
-      
-//         const handleSubmit = async (e) => {
-//           e.preventDefault();
-//           try {
-//             if (!imageFile) {
-//               toast.error('No image file selected');
-//               return;
-//             }
-      
-//             const formDataImage = new FormData();
-//             formDataImage.append('file', imageFile);
-//             formDataImage.append('upload_preset', preset_key);
-      
-//             const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
-//             const imageUrl = response.data.secure_url;
-      
-//             await addFormData({ ...formData, imageUrl });
-//             toast.success('Form data saved successfully');
-//             navigate('/ticketCard');
-//           } catch (error) {
-//             console.error('Error saving form data:', error);
-//             toast.error('Failed to save form data');
-//           }
-//         };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     return (
-//         <div className="form-container">
-
-
-//              {/* upload */}
-
-
-
-
-
-//             <div>
-//           {/* {status !== 'done' && 
-//          <>
-//          <input ref={fileRef} id="file_upload_btn" type="file" onChange={(e)=> handleFileChange({e})} hidden />
-//          <label htmlFor='file_upload_btn' className='cursor-pointer'>
-
-// <div className="md:w-[556px] w-[310px] h-[328px] px-6 pt-6 pb-12 bg-[#042127] rounded-3xl border border-[#07363e] flex-col justify-start items-start gap-8 inline-flex md:ml-10 ml-5">
-//                <div className="text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal">Upload Profile Photo</div>
-//                   <div className="self-stretch h-[200px] rounded-[20px] bg-black/20 justify-center items-center gap-2.5 inline-flex">
-//                     <div className="md:w-60 w-[300px] h-[240px] md:h-60 p-6 bg-[#0e464e] rounded-[32px] border-3 border-[#23a0b5]/50 flex-col  justify-center items-center gap-4 inline-flex">
-
-//              <div data-svg-wrapper className="relative  ">
-//              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-//              <path d="M25.2639 14.8158C24.6812 10.2265 20.7505 6.6665 16.0052 6.6665C12.3305 6.6665 9.13854 8.8145 7.68121 12.1998C4.81721 13.0558 2.67188 15.7598 2.67188 18.6665C2.67188 22.3425 5.66254 25.3332 9.33854 25.3332H10.6719V22.6665H9.33854C7.13321 22.6665 5.33854 20.8718 5.33854 18.6665C5.33854 16.7945 6.93721 14.9905 8.90254 14.6452L9.67721 14.5092L9.93321 13.7652C10.8705 11.0305 13.1972 9.33317 16.0052 9.33317C19.6812 9.33317 22.6719 12.3238 22.6719 15.9998V17.3332H24.0052C25.4759 17.3332 26.6719 18.5292 26.6719 19.9998C26.6719 21.4705 25.4759 22.6665 24.0052 22.6665H21.3385V25.3332H24.0052C26.9465 25.3332 29.3385 22.9412 29.3385 19.9998C29.337 18.8045 28.9347 17.6443 28.196 16.7045C27.4574 15.7647 26.425 15.0998 25.2639 14.8158Z" fill="#FAFAFA"/>
-//              <path d="M17.3385 18.6665V13.3332H14.6719V18.6665H10.6719L16.0052 25.3332L21.3385 18.6665H17.3385Z" fill="#FAFAFA"/>
-//              </svg>
-//              </div>
-
-
-//              <div className="self-stretch text-center text-neutral-50 text-base font-normal font-['Roboto'] leading-normal">Drag & drop or click to upload</div>
-//          </div>
-//     </div>
-//  </div>
-
-
-//          </label>
-
-
-//          </>
-//          } */}
-// {/*       
-
-
-
-
-//       {status === 'done' && imageUrl && (
-
-
-//  <div>
-//      <div className="md:w-[556px] w-[310px] h-[328px] px-6 pt-6 pb-12 bg-[#042127] rounded-3xl border border-[#07363e] flex-col justify-start items-start gap-8 inline-flex md:ml-10 ml-5">
-//     <div className="self-stretch h-[200px] rounded-[20px] bg-black/20 justify-center items-center gap-2.5 inline-flex mt-10">
-//    <img src={imageUrl} alt="Uploaded" className=" w-[300px] h-[240px] md:h-60  object-cover rounded-[32px] border-3 border-[#23a0b5]/50 flex-col  justify-center items-center gap-4 inline-flex " />
-//  </div>
-//  </div>
-//  </div>
-
-
-//  )}   */}
-
-//      </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// {/* thissssss */}
-
-//  <form onSubmit={handleSubmit}>
-//   <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
-//   <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-//   <textarea name="textarea" value={formData.textarea} onChange={handleChange} placeholder="Special Request" />
-//         <input type="file" onChange={handleImageChange} accept="image/*" required />
-
-
-//         {/* done */}
-//         {/* <button type="submit">Submit</button> */}
- 
-
-
-    
-
-
-// {/*
-
-
-//  //             <form onSubmit={handleSubmit}>
-// //                 <div>
-// //                     <label className="form-label">
-// //                         Enter your name:
-// //                     </label>
-// //                     <input
-// //                         className="form-input"
-// //                         type="text"
-// //                         name="name"
-// //                         value={formData.name}
-// //                         onChange={handleChange}
-// //                         required
-// //                     />
-// //                     {errors.name && (
-// //                         <span className="error-message">
-// //                             {errors.name}
-// //                         </span>
-// //                     )}
-// //                 </div>
-// //                 <div>
-// //                     <label className="form-label">
-// //                         Enter your Email:
-// //                     </label>
-// //                     <input
-// //                         className="form-input"
-// //                         type="email"
-// //                         name="email"
-// //                         value={formData.email}
-// //                         onChange={handleChange}
-// //                     />
-// //                     {errors.email && (
-// //                         <span className="error-message">
-// //                             {errors.email}
-// //                         </span>
-// //                     )}
-// //                 </div>
-// //                 <div>
-// //                     <label className="form-label">
-// //                         Special request?
-// //                     </label>
-// //                                     <textarea
-// //                     className="textarea-input"
-// //                     name="textarea"
-// //                     value={formData.textarea}
-// //                     onChange={handleChange}
-// //                     rows="5"
-// //                     placeholder="Enter your text here..."
-// //                 ></textarea>
-// //                     {errors.textarea && (
-// //                         <span className="error-message">
-// //                             {errors.textarea}
-// //                         </span>
-// //                     )}
-// //                 </div>
-
-
-
-
-
-// // done
-//                  <div className=" h-12 w-full mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row ">
-
-//                 <div onClick={handleBack}  className="grow shrink basis-0 md:h-12 md:px-6  py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[340px] h-[48px] ">                    
-//                <button  className=" text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal  ">Cancel</button>
-//                  </div>
-
-// */}  
                 
-//                 <div className=" h-12 w-full mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row ">
+                <div className='flex flex-col  w-[310px]  text-white  md:w-[550px]' >
+                <label  className='pb-3 pt-5'>Enter Your Email: </label>
+                <input
+                      type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Name"
+                    required
+                    className='border-1 border-[#23a0b5]/50  w-full p-4 rounded-2xl '
+                />
+
+                </div>
+                
+
+                <div className='flex flex-col text-white  w-[310px]   md:w-[550px]' >
+                <label  className='pb-3 pt-5'>Special Request? </label>
+                <textarea
+                    name="textarea"
+                    value={formData.textarea}
+                    onChange={handleChange}
+                    placeholder="write here..."
+                    className='border-1 border-[#23a0b5]/50  w-full p-4 h-[150px] rounded-2xl '
+                />
+
+                </div>
+
+
+
+
+<div className=" h-12 md:w-[600px] mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row w-[310px] ">
 
                      
-//                  <div  >                    
-//                  <button type="submit"   className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[340px] h-[48px] text-white "  >Cancel
+<div  className=' justify-center w-full '>                    
+<button type="submit"   className="grow  basis-0 md:h-12 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex w-[310px] md:w-[280px] h-[48px] text-white " onClick={handleBack} >Cancel
 
-//                 </button>
-//                  </div>
+</button>
+</div>
 
 
-//                  <div  >                    
-//                  <button type="submit"   className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[340px] h-[48px] bg-[#23a0b5] text-white "  >Next
+<div  className='w-full'>                    
+<button type="submit"   className="grow shrink basis-0 md:h-12  py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex md:w-[280px] w-[310px] h-[48px] bg-[#23a0b5] text-white "  >Next
 
-//                 </button>
-//                  </div>
+</button>
+</div>
 
 
 
-//                 </div>
-             
+</div>
 
 
+            </form>
+        </div>
+    );
+}
 
+export default Form;
 
-//                   {/* </div> */}
-         
-//             </form>
 
-//          </div>
 
-         
-//     );
-//  }
 
-// export default Form;
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// {/* // import React, { useState } from 'react';
-// // import { addFormData } from './db';
-// // import axios from 'axios'; 
-
-// // function Form() {
-// //   const [formData, setFormData] = useState({ name: '', email: '', textarea: '', imageUrl: '' });
-// //   const [imageFile, setImageFile] = useState(null);
-// //   const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
-// //   const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
-  
-
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFormData({ ...formData, [name]: value });
-// //   };
-
-// //   const handleImageChange = (e) => {
-// //     setImageFile(e.target.files[0]);
-// //   };
-
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     try {
-// //       if (!imageFile) {
-// //         console.error('No image file selected');
-// //         return;
-// //       }
-
-// //       const formDataImage = new FormData();
-// //       formDataImage.append('file', imageFile);
-// //       formDataImage.append('upload_preset', preset_key);
-
-// //       const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
-// //       const imageUrl = response.data.secure_url;
-
-// //       await addFormData({ ...formData, imageUrl });
-// //       console.log('Form data saved to IndexedDB:', { ...formData, imageUrl });
-// //     } catch (error) {
-// //       console.error('Error saving form data:', error);
-// //     }
-// //   };
-
-// //   return (
-// //     <form onSubmit={handleSubmit}>
-// //       <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
-// //       <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-// //       <textarea name="textarea" value={formData.textarea} onChange={handleChange} placeholder="Special Request" />
-// //       <input type="file" onChange={handleImageChange} accept="image/*" required />
-// //       <button type="submit">Submit</button>
-// //     </form>
-// //   );
-// // }
-
-// // export default Form;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // import React, { useState, useRef } from 'react';
-// // import './Form.css';
-// // import { useNavigate } from 'react-router-dom';
-// // import { addFormData } from './db';
-// // import axios from 'axios';
-// // import { toast } from 'react-toastify';
-
-// // function Form() {
-// //   const navigate = useNavigate();
-// //   const [formData, setFormData] = useState({ name: '', email: '', textarea: '' });
-// //   const [imageFile, setImageFile] = useState(null);
-// //   const cloud_name = import.meta.env.VITE_PUBLIC_CLOUDINARY_CLOUD;
-// //   const preset_key = import.meta.env.VITE_PUBLIC_CLOUDINARY_PRESET_KEY;
-
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFormData({ ...formData, [name]: value });
-// //   };
-
-// //   const handleImageChange = (e) => {
-// //     setImageFile(e.target.files[0]);
-// //   };
-
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     try {
-// //       if (!imageFile) {
-// //         toast.error('No image file selected');
-// //         return;
-// //       }
-
-// //       const formDataImage = new FormData();
-// //       formDataImage.append('file', imageFile);
-// //       formDataImage.append('upload_preset', preset_key);
-
-// //       const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, formDataImage);
-// //       const imageUrl = response.data.secure_url;
-
-// //       await addFormData({ ...formData, imageUrl });
-// //       toast.success('Form data saved successfully');
-// //       navigate('/ticketCard');
-// //     } catch (error) {
-// //       console.error('Error saving form data:', error);
-// //       toast.error('Failed to save form data');
-// //     }
-// //   };
-
-//   // return (
-//   //   <div className="form-container">
-//    <form onSubmit={handleSubmit}>
-//         <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" required /> */}
-
-//         {/* <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required /> 
-//       <textarea name="textarea" value={formData.textarea} onChange={handleChange} placeholder="Special Request" />
-//         <input type="file" onChange={handleImageChange} accept="image/*" required />
-//         <button type="submit">Submit</button> 
-//        </form>
-//     </div> 
-//  );
-//  } 
-
-//  export default Form; */}

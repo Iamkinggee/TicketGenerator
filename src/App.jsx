@@ -1,39 +1,9 @@
 
-// import './App.css'
-// import TicketCard from './components/TicketCard'
-// import AttendeeDetails from './pages/AttendeeDetails'
-// import SelectTicket from './pages/SelectTicket'
-
-
-//  function App() {
-
-
-//    return (
-// <>
-//     <SelectTicket/> 
-
-
-    
-    
-//      </>
-   
-      
-//    )
- 
-//  }
-//  export default App 
-
-
-
-
-
-
-
 import './App.css'
 import { Routes, Route } from 'react-router-dom';
-import TicketCard from './components/TicketCard'
+import TicketCard from './pages/TicketCard'
 import AttendeeDetails from './pages/AttendeeDetails'
-import SelectTicket1 from './pages/SelectTicket1'
+import SelectTicket from './pages/SelectTicket'
 
 
  function App() {
@@ -41,7 +11,7 @@ import SelectTicket1 from './pages/SelectTicket1'
 
    return (
     <Routes>
-    <Route path="/" element={<SelectTicket1 />} />
+    <Route path="/" element={<SelectTicket />} />
     <Route path="/attendeeDetails" element={<AttendeeDetails />} />
     <Route path="/ticketCard" element={<TicketCard/>} />
   </Routes>
