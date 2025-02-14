@@ -5,7 +5,7 @@ function Navbar() {
  
 
 
-<div className="md:w-[1000px] w-full   h-[76px] bg-[#24A0B533]/20 border-1 rounded-3xl px-[10px] mt-[12px] border-[#197686] flex">
+<div className="md:w-[1000px] w-full  h-[76px] bg-[#24A0B533]/20 border-1 rounded-3xl px-[10px] mt-[12px] border-[#197686] flex">
 
 {/* <div className="w-[1100px] items-center justify-center   h-[76px] bg-[#24A0B533]/20 border-1 rounded-3xl px-[10px] mt-[12px] border-[#197686]  flex"> */}
 <nav className="py-4 w-full mx-auto">

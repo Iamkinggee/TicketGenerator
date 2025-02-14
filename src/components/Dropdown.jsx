@@ -27,16 +27,9 @@ function Dropdown() {
                     <option className='outline-none text-white bg-[#0E464F]' value={option.value}>{option.label}</option>
                 ))}
             </select>
-    {/* {value} */}
         </div>
 
-        
-
- 
-
-
-
-
+    
     </div>
   )
 }

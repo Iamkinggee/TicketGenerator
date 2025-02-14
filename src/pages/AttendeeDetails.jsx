@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import { useNavigate } from 'react-router-dom';
 //  import Upload1 from '../components/Upload1';
 import { Bounce, ToastContainer } from 'react-toastify';
-import Form from '../components/form';
+import Form1 from '../components/form1';
 // import FileUpload from '../components/FileUpload';
 
 
@@ -27,7 +27,7 @@ function AttendeeDetails() {
 
   return (
  
-        <div className="w-full h-[1000px] md:h-[1300px] flex flex-col bg-opacity-40 bg-[#02191D]  items-center overflow-hidden px-[16px] "> 
+        <div className="w-full h-[1210px] md:h-[1350px] flex flex-col bg-opacity-40 bg-[#02191D]  items-center overflow-hidden px-[16px] "> 
         <div className="">
 
 
@@ -52,7 +52,7 @@ transition={Bounce}
 
 
 
-<div className="md:w-[700px]   w-[350px] h-[1200px] md:h-[1058px]  rounded-[40px] border-1 pt-[20px] md:pt-[64px] md:p-[40px]   gap-[32px] bg-[#041E23] border-[#0E464F] md:mt-[50px] mt-[20px] md:mx-[120px] m pb-[100px] ">
+<div className="md:w-[700px]  p    w-[350px] h-[1200px] md:h-[1150px]  rounded-[40px] border-1 pt-[20px] md:pt-[64px] md:p-[40px]   gap-[32px] bg-[#041E23] border-[#0E464F] md:mt-[50px] mt-[20px] md:mx-[120px]  pb-[100px] ">
             <div className="md:flex block justify-center pb-[20px]  ">    
                <p className="md:text-[30px] text-[25px] md:pl-[0px] pl-[15px]   text-white w-[531px] h-[32px]  ">Attendee Details</p> 
                
@@ -105,7 +105,7 @@ transition={Bounce}
 {/* 
 <Upload1/> */}
 
-<Form/>
+<Form1/>
 
 
 

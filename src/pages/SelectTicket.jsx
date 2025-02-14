@@ -1,6 +1,8 @@
 import Navbar from "../components/Navbar";
 import { useNavigate } from 'react-router-dom';
-import Dropdown from "../components/Dropdown";
+import React, { useState } from 'react';
+import { addFormData } from './db'; 
+
 
 function SelectTicket() {
 
@@ -15,9 +17,72 @@ function SelectTicket() {
 
 
 
+
+
+  const handleTicketSelect = (ticket) => {
+    setSelectedTicket(ticket);
+  };
+
+  const handleQuantityChange = (e) => {
+    setTicketQuantity(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation: Ensure a ticket is selected
+    if (!selectedTicket) {
+      setErrors({ ticket: 'Please select a ticket option.' });
+      return;
+    }
+
+    // Save the data to IndexedDB
+    try {
+      const formData = {
+        selectedTicket,
+        ticketQuantity,
+      };
+
+      await addFormData(formData);  // Assuming addFormData saves data to IndexedDB
+      console.log('Data saved:', formData);
+      // You can navigate to a different page after saving, if necessary
+    } catch (error) {
+      console.error('Failed to save to IndexedDB:', error);
+    }
+  };
+
+
+
+
+
+
+
+
+
+  
+      // const [value, setValue] = useState('')
+  
+      // const options = [
+      //     {label : "1", value: 1},
+      //     {label : "2", value: 2},
+      //     {label : "3", value: 3},
+      //     {label : "4", value: 4},
+      //     {label : "5", value: 5},
+      //     {label : "6", value: 6},
+      // ]
+  
+      // function handleSelect(event){
+      //     setValue(event.target.value)
+      // }
+
+
+
+
+
+
+
     return (
-      // <div className="w-full h-[1000px] md:h-[1126px] flex flex-col bg-[#02191D] bg-opacity-40 items-center overflow-hidden "> 
-      //   <div className="max-w-full w-[900px] px-5">
+     
 
       <div className="w-full h-[1000px] md:h-[1080px] flex flex-col bg-[#02191D] bg-opacity-40 items-center overflow-hidden px-[10px] "> 
         <div className="">
@@ -80,43 +145,6 @@ function SelectTicket() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* 
-                        <div data-svg-wrapper className="relative mt-[30px]">
-            <svg width="1000" height="8" viewBox="1 1 1000 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="620" height="3.0001" fill="#07373F"/>
-            </svg>
-            </div> */}
-
-
-            {/* <div className="w-[604px] text-[#0E464F] pr-[372] rounded-[5px]">
-
-            </div> */}
-
-
-            {/* <div className="w-[604px] h-[682px] rounded-[32px] border-1 p-[24px] gap-[32px] border-[#0E464F] mt-[25px] ">
-
-            </div> */}
-
-
-
-
 <div className="w-[305px] md:w-full  h-[200px] mt-[30px] md:p-6 p-[0px] rounded-3xl border-1  border-[#07363e] backdrop-blur-[14px] flex-col   md:justify-start md:items-center justify-between gap-2 inline-flex  bg-linear-to-t from-[#0a0c11]/10 to-[#07363e]/80 mx-4">
 
 
@@ -151,12 +179,6 @@ function SelectTicket() {
 
 
 
-{/* <div data-svg-wrapper className="relative mt-[30px]">
-<svg width="556" height="4" viewBox="0 0 556 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="556" height="4.0001" fill="#07373F"/>
-</svg>
-</div> */}
-
 
 <div data-svg-wrapper className="relative mt-[30px]">
             <svg width="1000" height="8" viewBox="1 1 1000 6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -177,42 +199,60 @@ function SelectTicket() {
 
     {/* use col here */}
   <div className=" self-stretch justify-between items-start  gap-10  flex flex-col md:flex-row">
-    {/* <div className="md:w-[158px]  h-[110px] p-3 bg-[#12464e] rounded-xl border border-[#197686] flex-col justify-start items-start  inline-flex overflow-hidden "> */}
+  
         
-    <div className="w-[270px] h-[110px] p-3 bg-[#12464e] rounded-xl border border-[#197686] flex-col justify-start items-start  inline-flex overflow-hidden md:w-1/3 ">
-        
+    <div className="w-[270px] h-[110px] p-3 bg-[#12464e] rounded-xl border border-[#197686] flex-col justify-start items-start  inline-flex overflow-hidden md:w-1/3 "     >
+
+
+
+
+    <div   className={`card ${selectedTicket === 'free' ? 'selected' : ''}`}
+          onClick={() => handleTicketSelect('Free Access')}>
       <div className="text-white text-2xl font-semibold font-['Roboto'] leading-relaxed">Free</div>
       <div className="self-stretch h-[45px] flex-col justify-center items-start flex">
         <div className="text-neutral-50 text-base font-normal font-['Roboto'] uppercase leading-normal">Regular Access</div>
         <div className="text-[#d9d9d9] text-sm font-normal font-['Roboto'] leading-[21px]">20/52</div>
       </div>
     </div>
+    </div>
+
+
+
+
+
 
     <div className="w-[270px] h-[110px] p-3 rounded-xl border-2 border-[#197686] flex-col justify-start items-start  inline-flex overflow-hidden md:w-1/3">
+
+    <div   className={`card ${selectedTicket === 'free' ? 'selected' : ''}`}
+          onClick={() => handleTicketSelect('VIP Access')}>
       <div className="text-white text-2xl font-semibold font-['Roboto'] leading-relaxed">$150</div>
       <div className="self-stretch h-[45px] flex-col justify-center items-start flex">
         <div className="text-neutral-50 text-base font-normal font-['Roboto'] uppercase leading-normal">VIP Access </div>
         <div className="text-[#d9d9d9] text-sm font-normal font-['Roboto'] leading-[21px]">20/52</div>
       </div>
     </div>
+    </div>
+
 
 
     <div className="w-[270px] h-[110px] p-3 rounded-xl border-2 border-[#197686] flex-col justify-start items-start  inline-flex overflow-hidden md:w-1/3">
+
+    <div   className={`card ${selectedTicket === 'free' ? 'selected' : ''}`}
+          onClick={() => handleTicketSelect('VVIP Access')}>
       <div className="text-white text-2xl font-semibold font-['Roboto'] leading-relaxed">$150</div>
       <div className="self-stretch h-[45px] flex-col justify-center items-start flex">
         <div className="text-neutral-50 text-base font-normal font-['Roboto'] uppercase leading-normal">VVIP Access</div>
         <div className="text-[#d9d9d9] text-sm font-normal font-['Roboto'] leading-[21px]">20/52</div>
       </div>
+      </div>
+
+
+
+
+
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
 
 
 
@@ -228,14 +268,36 @@ function SelectTicket() {
 
 
 
-
-
-
 <div className="flex mt-[10px] ">
 
-<Dropdown/>
 
-</div>
+{/* <Dropdown/> */}
+
+{/* <div className='  mt-2'>
+        <div className="h-12  md:w-[600px]  p-3 rounded-xl border border-[#07363e]  text-white ">
+            <select className=' w-full ' onChange={handleSelect}>
+                {options.map(option =>(
+                    <option className='outline-none text-white bg-[#0E464F]' value={option.value}>{option.label}</option>
+                ))}
+            </select>
+        </div>
+
+    
+    </div>
+
+</div> */}
+
+
+
+
+
+<input
+          type="number"
+          min="1"
+          value={ticketQuantity}
+          onChange={handleQuantityChange}
+        />
+
 
 
 
@@ -248,40 +310,15 @@ function SelectTicket() {
     <div className=" text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal  ">Cancel</div>
   </div>
 
-  <div onClick={handleNext}  className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] bg-[#23a0b5] ">
+  <div type="submit" onClick={handleSubmit} className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] bg-[#23a0b5] ">
     <div   className=" text-base font-normal font-['JejuMyeongjo'] leading-normal text-white  ">Next</div>
   </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
-
-
-
-
-
-
-
-
-
         </div>
+      </div>
       </div>
   
     );
