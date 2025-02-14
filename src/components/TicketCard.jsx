@@ -1,9 +1,48 @@
-import React from 'react'
+
 import Navbar from './Navbar'
+import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { getFormData } from './db';
+
 
 function TicketCard() {
+
+  const [formData, setFormData] = useState(null);
+
+
+
+   
+
+
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+
+
+const [ticketData, setTicketData] = useState(null);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data = await getFormData();
+      console.log('Retrieved data from IndexedDB:', data);
+      setTicketData(data);
+    } catch (error) {
+      console.error('Error fetching data from IndexedDB:', error);
+    }
+  };
+  fetchData();
+}, []);
+
+if (!ticketData) return <div>Loading ticket...</div>;
+
+
+
   return (
-<div  className="w-full h-[1000] md:h-[1300px] flex flex-col bg-[#02191D] bg-opacity-40 items-center pb-[30px]  overflow-hidden px-[10px]">
+<div  className="w-full h-[1000px] md:h-[1300px] flex flex-col bg-[#02191D] bg-opacity-40 items-center pb-[30px]  overflow-hidden px-[10px]">
 
 <Navbar/>
 
@@ -28,36 +67,39 @@ function TicketCard() {
 
 
 <div className="md:flex block justify-center pb-[0px] mt-[-100px] ">    
-               <p className="md:text-[30px] text-[25px] md:pl-[0px]    text-white w-[531px]  h-[32px]  ">Ticket Selection</p> 
+               <p className="md:text-[30px] text-[25px] md:pl-[0px]    text-white w-[531px]  h-[32px]  ">Ready</p> 
                
 
-               <p className="text-white  font-mono  text-[16px] font-[400px] pt-[12px]  md:pl-[0px]">Step1/3</p>
+               <p className="text-white  font-mono  text-[16px] font-[400px] pt-[12px]  md:pl-[0px]">Step 3/3</p>
 
                </div>
-
-
-
-
-
-
 
     </div>
 
 {/* ticket svg */}
-    <div data-svg-wrapper>
-    <svg width="304" class='md:w-[604px]' height="5" viewBox="0 0 604 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div data-svg-wrapper className=''>
+
+
+    <svg width="304" class='md:w-[604px]' height="5" viewBox="0 0 601  5" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_4002_115)">
-    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H602C603.105 0.5 604 1.39543 604 2.5C604 3.60457 603.105 4.5 602 4.5H2.00001C0.895441 4.5 0 3.60457 0 2.5Z" fill="#0E464F"/>
-    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H230C231.105 0.5 232 1.39543 232 2.5C232 3.60457 231.105 4.5 230 4.5H2C0.895428 4.5 0 3.60457 0 2.5Z" fill="#24A0B5"/>
+    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H602C603.105 0.2 4 1.39543 604 2.5C604 3.60457 603.105 4.5 602 4.5H2.00001C0.895441 4.5 0 3.60457 0 2.5Z" fill="#0E464F"/>
+    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H230C231.105 0.5 232 1.39543 232 2.5C232 3.60457 6231.105 4.5 230 4.5H2C0.895428 4.5 0 3.60457 0 2.5Z" fill="#24A0B5"/>
     </g>
     <defs>
     <clipPath id="clip0_4002_115">
-    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H602C603.105 0.5 604 1.39543 604 2.5C604 3.60457 603.105 4.5 602 4.5H2.00001C0.895441 4.5 0 3.60457 0 2.5Z" fill="white"/>
+    <path d="M0 2.5C0 1.39543 0.895431 0.5 2 0.5H602C603.105 6 604 1.39543 604 2.5C604 3.60457 603.105 4.5 802 4.5H2.00001C0.895441 4.5 0 3.60457 0 2.5Z" fill="white"/>
     </clipPath>
     </defs>
     </svg>
+
+
+    
     </div>
+
+    
   </div>
+
+  
 
   <div class="self-stretch h-[849px] pt-[170px] flex-col justify-center items-center gap-8 flex">
     <div class="self-stretch h-[81px] flex-col justify-start items-center gap-4 flex">
@@ -75,7 +117,7 @@ function TicketCard() {
 
 
 
-
+       
 
 
             {/* heeeeeeeeeee */}
@@ -112,16 +154,35 @@ function TicketCard() {
                   <div class="text-white text-[10px] font-normal font-['Roboto'] leading-[15px] ">📅 March 15, 2025 | 7:00 PM</div>
                 </div>
               </div>
-              <img class="w-[140px]  h-[140px] rounded-xl border-4 border-[#23a0b5]/50" src="https://placehold.co/140x140" />
+
+
+
+
+              {/* <img class="w-[140px]  h-[140px] rounded-xl border-4 border-[#23a0b5]/50" src="https://placehold.co/140x140" /> */}
+
+
+              {ticketData.imageUrl ? (
+        <img src={ticketData.imageUrl} alt="Uploaded" style={{ width: '140px', height: '140px', objectFit: 'cover' }} className=' rounded-xl border-4 border-[#23a0b5]/50' />
+      ) : (
+        <p>No image uploaded</p>
+      )}
+
+
+
+
+
+
+
+
               <div class="self-stretch h-40 p-1 bg-[#07333c] rounded-lg border border-[#123d43] flex-col justify-center items-center flex">
                 <div class="self-stretch border-b border-[#12464e] justify-start items-center gap-2 inline-flex">
                   <div class="grow shrink basis-0 p-1 border-r border-[#12464e] flex-col justify-center items-start gap-1 inline-flex">
                     <div class="opacity-30 text-white text-[10px] font-normal font-['Roboto'] leading-[15px]">Enter your name</div>
-                    <div class="text-white text-xs font-bold font-['Roboto'] leading-[18px]">Avi Chukwu</div>
+                    <div class="text-white text-xs font-bold font-['Roboto'] leading-[18px]">{ticketData.name}</div>
                   </div>
                   <div class="grow shrink basis-0 p-1 flex-col justify-center items-start gap-1 inline-flex">
                     <div class="opacity-30 text-white text-[10px] font-normal font-['Roboto'] leading-[15px]">Enter your email *</div>
-                    <div class="text-white text-xs font-bold font-['Roboto'] leading-[18px]">User@email.com</div>
+                    <div class="text-white text-xs font-bold font-['Roboto'] leading-[18px]">{ticketData.email}</div>
                   </div>
                 </div>
                 <div class="self-stretch border-b border-[#12464e] justify-start items-center gap-2 inline-flex">
@@ -136,7 +197,7 @@ function TicketCard() {
                 </div>
                 <div class="self-stretch h-[65px] p-2 flex-col justify-center items-start gap-1 flex">
                   <div class="self-stretch opacity-30 text-white text-[10px] font-normal font-['Roboto'] leading-[15px]">Special request?</div>
-                  <div class="self-stretch text-white text-[10px] font-normal font-['Roboto'] leading-[15px]">Nil ? Or the users sad story they write in there gets this whole space, Max of three rows</div>
+                  <div class="self-stretch text-white text-[10px] font-normal font-['Roboto'] leading-[15px]">{ticketData.textarea}</div>
                 </div>
               </div>
             </div>
@@ -336,40 +397,236 @@ function TicketCard() {
 
 
       {/* <div class="self-stretch h-12 justify-end items-end gap-6 inline-flex">
-        <div class="grow shrink basis-0 h-12 px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex overflow-hidden">
-          <div class="text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal">Book Another Ticket</div>
-        </div>
+//         <div class="grow shrink basis-0 h-12 px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex overflow-hidden">
+//           <div class="text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal">Book Another Ticket</div>
+//         </div>
 
-        <div class="grow shrink basis-0 h-12 px-6 py-3 bg-[#23a0b5] rounded-lg justify-center items-center gap-2 flex overflow-hidden">
-          <div class="text-neutral-50 text-base font-normal font-['JejuMyeongjo'] leading-normal">Download Ticket</div>
+//         <div class="grow shrink basis-0 h-12 px-6 py-3 bg-[#23a0b5] rounded-lg justify-center items-center gap-2 flex overflow-hidden">
+//           <div class="text-neutral-50 text-base font-normal font-['JejuMyeongjo'] leading-normal">Download Ticket</div>
 
-        </div> */}
+//         </div> */}
 
 
 
 
         
-<div className="h-12  w-full mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row  mb-[100px] ">
+ <div className="h-12  w-full mt-[48px] md:justify-end justify-center items-center md:items-end gap-6  flex flex-col md:flex-row  mb-[100px] ">
 
-<div className="grow shrink  basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] ">
-  <div className=" text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal  ">BOOK ANOTHER TICKET</div>
-</div>
+ <div className="grow shrink  basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] ">
+  <div onClick={handleBack} className=" text-[#23a0b5] text-base font-normal font-['JejuMyeongjo'] leading-normal  ">BOOK ANOTHER TICKET</div>
+ </div>
 
-<div className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] bg-[#23a0b5] ">
-  <div className=" text-base  font-normal font-['JejuMyeongjo'] leading-normal text-white  ">DOWNLOAD TICKET</div>
-</div>
-
-
+ <div className="grow shrink basis-0 md:h-12 md:px-6 py-3 rounded-lg border border-[#23a0b5] justify-center items-center gap-2 flex  w-[287px] h-[48px] bg-[#23a0b5] ">
+   <div className=" text-base  font-normal font-['JejuMyeongjo'] leading-normal text-white  ">DOWNLOAD TICKET</div>
+ </div>
 
 
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+
+
+       </div>
+     </div>
+   </div>
+ </div>
+ </div>
 
 
   )
 }
 
 export default TicketCard
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // import React, { useEffect, useState } from 'react';
+// // import { getFormData } from './db';
+
+// // function TicketPage() {
+// //     const [formData, setFormData] = useState(null);
+
+// //     useEffect(() => {
+// //         const fetchData = async () => {
+// //             try {
+// //                 const data = await getFormData();
+// //                 setFormData(data);
+// //             } catch (error) {
+// //                 console.error('Failed to load ticket data:', error);
+// //             }
+// //         };
+
+// //         fetchData();
+// //     }, []);
+
+// //     if (!formData) {
+// //         return <p>Loading ticket...</p>;
+// //     }
+
+// //     return (
+// //         <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-md">
+// //             <h1 className="text-2xl font-bold mb-4 text-center">Your Event Ticket</h1>
+// //             <p className="text-lg mb-2"><strong>Name:</strong> {formData.name}</p>
+// //             <p className="text-lg mb-2"><strong>Email:</strong> {formData.email}</p>
+// //             <p className="text-lg mb-2"><strong>Special Request:</strong> {formData.textarea}</p>
+// //             {formData.imageUrl && (
+// //                 <div className="mt-4">
+// //                     <p className="text-lg mb-2"><strong>Uploaded Image:</strong></p>
+// //                     <img src={formData.imageUrl} alt="Uploaded Ticket" className="w-full h-auto rounded-lg" />
+// //                 </div>
+// //             )}
+// //         </div>
+// //     );
+// // }
+
+// // export default TicketPage;
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { getFormData } from './db';
+
+// const TicketPage = () => {
+//   const [formData, setFormData] = useState(null);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const data = await getFormData();
+//       setFormData(data);
+//     };
+//     fetchData();
+//   }, []);
+
+//   if (!formData) return <div>Loading ticket...</div>;
+
+//   return (
+//     <div>
+     
+//       <p>Name: {formData.name}</p>
+//       <p>Email: {formData.email}</p>
+//       {formData.imageUrl && <img src={formData.imageUrl} alt="Ticket" />}
+//     </div>
+//   );
+// };
+
+// export default TicketPage;
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { getFormData } from './db';
+
+// const TicketPage = () => {
+//   const [formData, setFormData] = useState(null);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const data = await getFormData();
+//       console.log('Retrieved data from IndexedDB:', data);
+//       setFormData(data);
+//     };
+//     fetchData();
+//   }, []);
+
+//   if (!formData) return <div>Loading ticket...</div>;
+
+//   return (
+//     <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+//       <h1 className="text-2xl font-bold mb-4">Event Ticket</h1>
+//       <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
+//         <p className="text-lg mb-2"><strong>Name:</strong> {formData.name}</p>
+//         <p className="text-lg mb-2"><strong>Email:</strong> {formData.email}</p>
+//         {formData.imageUrl ? (
+//           <div className="mt-4">
+//             <img src={formData.imageUrl} alt="Ticket" className="w-full h-auto rounded-lg shadow" />
+//           </div>
+//         ) : (
+//           <p className="text-red-500">No image found. Please ensure you update the form page to include an image upload field and save the Cloudinary URL to IndexedDB.</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default TicketPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TicketPage.jsx
+
+// import React, { useState, useEffect } from 'react';
+// import { getFormData } from './db';
+
+// function TicketPage() {
+//   const [ticketData, setTicketData] = useState(null);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const data = await getFormData();
+//         console.log('Retrieved data from IndexedDB:', data);
+//         setTicketData(data);
+//       } catch (error) {
+//         console.error('Error fetching data from IndexedDB:', error);
+//       }
+//     };
+//     fetchData();
+//   }, []);
+
+//   if (!ticketData) return <div>Loading ticket...</div>;
+
+//   return (
+//     <div>
+//       <h1>Event Ticket</h1>
+//       <p><strong>Name:</strong> {ticketData.name}</p>
+//       <p><strong>Email:</strong> {ticketData.email}</p>
+//       <p><strong>Special Request:</strong> {ticketData.textarea}</p>
+//       {ticketData.imageUrl ? (
+//         <img src={ticketData.imageUrl} alt="Uploaded" style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
+//       ) : (
+//         <p>No image uploaded</p>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default TicketPage;
+
